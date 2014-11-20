@@ -58,4 +58,10 @@ describe('index.test.js', function () {
     .get('/')
     .expect(404, done);
   });
+
+  it('should 500 when mock file not exists', function (done) {
+    request(app.listen())
+    .get('/not-exists?__scene')
+    .expect(500, done);
+  });
 });

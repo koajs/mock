@@ -19,7 +19,7 @@ koa-mock
 [gittip-url]: https://www.gittip.com/fengmk2/
 [david-image]: https://img.shields.io/david/koajs/koa-mock.svg?style=flat-square
 [david-url]: https://david-dm.org/koajs/koa-mock
-[node-image]: https://img.shields.io/badge/node.js-%3E=_0.10-green.svg?style=flat-square
+[node-image]: https://img.shields.io/badge/node.js-%3E=_0.11-green.svg?style=flat-square
 [node-url]: http://nodejs.org/download/
 [download-image]: https://img.shields.io/npm/dm/koa-mock.svg?style=flat-square
 [download-url]: https://npmjs.org/package/koa-mock
