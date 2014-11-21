@@ -30,11 +30,7 @@ module.exports = function (options) {
     var data = urlmock(datadir, this.url);
     var view = data.__view;
     debug('mock %s => %j, view: %s', this.url, data, view);
-    if (!view) {
-      return this.body = data;
-    }
-
-    if (IS_JSON_RE.test(this.path)) {
+    if (!view || IS_JSON_RE.test(this.path)) {
       return this.body = data;
     }
 
