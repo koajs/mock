@@ -26,14 +26,14 @@
     "nunjucks": "~1.1.0",
     "supertest": "~0.15.0"
   },
-  "homepage": "https://github.com/koajs/koa-mock",
+  "homepage": "https://github.com/koajs/mock",
   "repository": {
     "type": "git",
-    "url": "git://github.com/koajs/koa-mock.git",
-    "web": "https://github.com/koajs/koa-mock"
+    "url": "git://github.com/koajs/mock.git",
+    "web": "https://github.com/koajs/mock"
   },
   "bugs": {
-    "url": "https://github.com/koajs/koa-mock/issues",
+    "url": "https://github.com/koajs/mock/issues",
     "email": "fengmk2@gmail.com"
   },
   "keywords": [

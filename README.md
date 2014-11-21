@@ -11,9 +11,9 @@ koa-mock
 
 [npm-image]: https://img.shields.io/npm/v/koa-mock.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/koa-mock
-[travis-image]: https://img.shields.io/travis/koajs/koa-mock.svg?style=flat-square
-[travis-url]: https://travis-ci.org/koajs/koa-mock
-[coveralls-image]: https://img.shields.io/coveralls/koajs/koa-mock.svg?style=flat-square
+[travis-image]: https://img.shields.io/travis/koajs/mock.svg?style=flat-square
+[travis-url]: https://travis-ci.org/koajs/mock
+[coveralls-image]: https://img.shields.io/coveralls/koajs/mock.svg?style=flat-square
 [coveralls-url]: https://coveralls.io/r/koajs/koa-mock?branch=master
 [gittip-image]: https://img.shields.io/gittip/fengmk2.svg?style=flat-square
 [gittip-url]: https://www.gittip.com/fengmk2/
