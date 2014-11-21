@@ -21,7 +21,8 @@ describe('index.test.js', function () {
   it('should render tpl with mock data', function (done) {
     request(app.listen())
     .get('/?__scene')
-    .expect('<p>welcome home, fengmk2</p>\n', done);
+    .expect(/iframe/)
+    .expect(/fengmk2/, done);
   });
 
   it('should render /users/1?__scene=fengmk2', function (done) {
@@ -63,5 +64,12 @@ describe('index.test.js', function () {
     request(app.listen())
     .get('/not-exists?__scene')
     .expect(500, done);
+  });
+
+  it('should render toolbox iframe', function (done) {
+    request(app.listen())
+    .get('/__koa_mock_scence_toolbox')
+    .expect('content-type', 'text/html; charset=utf-8')
+    .expect(200, done);
   });
 });

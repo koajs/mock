@@ -32,4 +32,9 @@ app.context.render = function* (view, data) {
   this.body = nunjucks.render(view, data);
 };
 
+if (!module.parent) {
+  app.listen(1984);
+  console.log('open http://localhost:1984');
+}
+
 module.exports = app;
