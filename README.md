@@ -14,11 +14,11 @@ koa-mock
 [travis-image]: https://img.shields.io/travis/koajs/mock.svg?style=flat-square
 [travis-url]: https://travis-ci.org/koajs/mock
 [coveralls-image]: https://img.shields.io/coveralls/koajs/mock.svg?style=flat-square
-[coveralls-url]: https://coveralls.io/r/koajs/koa-mock?branch=master
+[coveralls-url]: https://coveralls.io/r/koajs/mock?branch=master
 [gittip-image]: https://img.shields.io/gittip/fengmk2.svg?style=flat-square
 [gittip-url]: https://www.gittip.com/fengmk2/
-[david-image]: https://img.shields.io/david/koajs/koa-mock.svg?style=flat-square
-[david-url]: https://david-dm.org/koajs/koa-mock
+[david-image]: https://img.shields.io/david/koajs/mock.svg?style=flat-square
+[david-url]: https://david-dm.org/koajs/mock
 [node-image]: https://img.shields.io/badge/node.js-%3E=_0.11-green.svg?style=flat-square
 [node-url]: http://nodejs.org/download/
 [download-image]: https://img.shields.io/npm/dm/koa-mock.svg?style=flat-square
