@@ -32,6 +32,8 @@ Web page mock middleware.
 
 - Simple url and mock file mapping rules.
 - Support `*.js`, `*.json` and common datas.
+- Auto find all scenes and easy change it
+![koa-mock](https://cloud.githubusercontent.com/assets/156269/5139054/be4f779e-7193-11e4-8a8d-87f12c9a1dbc.gif)
 
 
 ## URL Mapping Rules
