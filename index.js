@@ -41,7 +41,7 @@ module.exports = function (options) {
       return this.body = data;
     }
 
-    yield* this.render(view, data);
+    yield this.render(view, data);
     // add scene toolbox iframe
 
     var scenes = urlmock.findAllScenes(datadir, this.url);
