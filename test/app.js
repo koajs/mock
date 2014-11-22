@@ -26,6 +26,18 @@ app.use(mock({
   datadir: path.join(fixtures, 'mocks')
 }));
 
+app.use(function* () {
+  if (this.path === '/') {
+    return yield this.render('home.html', {});
+  }
+  if (/^\/users\/\d+/.test(this.path)) {
+    return yield this.render('profile.html', {});
+  }
+  if (this.path === '/user') {
+    return this.body = {};
+  }
+});
+
 nunjucks.configure(path.join(fixtures, 'views'));
 
 app.context.render = function* (view, data) {

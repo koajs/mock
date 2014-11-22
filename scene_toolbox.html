@@ -39,7 +39,7 @@ button {
 
   <body>
     <select id="j-switch-scene" class="switch-scene">
-      <option>default</option>
+      <option></option>
     </select>
 
 <script src="https://dn-staticfile.qbox.me/jquery/2.0.3/jquery.min.js"></script>
@@ -59,7 +59,7 @@ button {
 
   var select = $('#j-switch-scene');
   var queries = parseQueryString(parent.location.search);
-  var options = '';
+  var options = '<option value=""></option>';
 
   // create select options
   for (var i = 0; i < scenes.length; i++) {
@@ -67,14 +67,26 @@ button {
     options += '<option value="' + v + '">' + v + '</option>';
   }
 
-  var currentScene = queries.__scene || 'default';
-  select.innerHTML = options;
-  select.html(options).val(currentScene);
+  select.html(options)
+  var currentScene = queries.__scene;
+  if (currentScene) {
+    select.val(currentScene);
+  }
 
   // change scene
   select.on('change', function() {
-    queries.__scene = select.val();
-    parent.location.search = '?' + stringifyQueryString(queries)
+    var val = select.val();
+    if (val) {
+      queries.__scene = val;
+    } else {
+      delete queries.__scene;
+    }
+    var qs = stringifyQueryString(queries);
+    if (qs) {
+      parent.location.search = '?' + qs;
+    } else {
+      parent.location = parent.location.pathname;
+    }
   });
 
   function stringifyQueryString(qs) {

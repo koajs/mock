@@ -31,7 +31,9 @@ module.exports = function (options) {
     }
 
     if (!this.query.hasOwnProperty('__scene')) {
-      return yield* next;
+      yield* next;
+      inject(this);
+      return;
     }
 
     var data = urlmock(datadir, this.url);
@@ -42,13 +44,21 @@ module.exports = function (options) {
     }
 
     yield this.render(view, data);
-    // add scene toolbox iframe
 
-    var scenes = urlmock.findAllScenes(datadir, this.url);
+    inject(this);
+  };
+
+  function inject(ctx) {
+    if (!ctx.response.is(['html'])) {
+      return;
+    }
+
+    // add scene toolbox iframe
+    var scenes = urlmock.findAllScenes(datadir, ctx.url);
     var iframe = '<iframe src="/__koa_mock_scence_toolbox?scenes=' + scenes.join(',') + '" \
       style="position: fixed; right: 0; border: 0; bottom: 0; margin: 0; padding: 0; height: 28px; z-index: 99998;">\
       </iframe></body>';
-
-    this.body = this.body.replace(/<\/body>/, iframe);
-  };
+    debug('inject %s with scenes: %j', ctx.url, scenes);
+    ctx.body = ctx.body.replace(/<\/body>/, iframe);
+  }
 };

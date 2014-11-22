@@ -28,7 +28,7 @@ describe('index.test.js', function () {
   it('should render /users/1?__scene=fengmk2', function (done) {
     request(app.listen())
     .get('/users/1?__scene=fengmk2')
-    .expect('<p>profile, fengmk2</p>\n', done);
+    .expect(/<p>profile, fengmk2<\/p>/, done);
   });
 
   it('should return json when mock data without __view', function (done) {
@@ -54,10 +54,12 @@ describe('index.test.js', function () {
     }, done);
   });
 
-  it('should 404 when querystring missing __scene', function (done) {
+  it('should render page with scenes when querystring missing __scene', function (done) {
     request(app.listen())
     .get('/')
-    .expect(404, done);
+    .expect(/<p>welcome home, <\/p>/)
+    .expect(/iframe/)
+    .expect(200, done);
   });
 
   it('should 500 when mock file not exists', function (done) {
