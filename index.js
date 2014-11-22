@@ -56,7 +56,7 @@ module.exports = function (options) {
     // add scene toolbox iframe
     var scenes = urlmock.findAllScenes(datadir, ctx.url);
     var iframe = '<iframe src="/__koa_mock_scence_toolbox?scenes=' + scenes.join(',') + '" \
-      style="position: fixed; right: 0; border: 0; bottom: 0; margin: 0; padding: 0; height: 28px; z-index: 99998;">\
+      style="width: 130px; position: fixed; right: 0; border: 0; bottom: 0; margin: 0; padding: 0; height: 28px; z-index: 99998;">\
       </iframe></body>';
     debug('inject %s with scenes: %j', ctx.url, scenes);
     ctx.body = ctx.body.replace(/<\/body>/, iframe);
