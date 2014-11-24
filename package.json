@@ -1,6 +1,6 @@
 {
   "name": "koa-mock",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "web page mock middleware",
   "main": "index.js",
   "scripts": {
