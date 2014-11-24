@@ -36,6 +36,10 @@ app.use(function* () {
   if (this.path === '/user') {
     return this.body = {};
   }
+  if (this.path === '/buffer') {
+    this.type = 'html';
+    return this.body = new Buffer('buffer string');
+  }
 });
 
 nunjucks.configure(path.join(fixtures, 'views'));

@@ -49,7 +49,7 @@ module.exports = function (options) {
   };
 
   function inject(ctx) {
-    if (!ctx.response.is(['html'])) {
+    if (!ctx.response.is(['html']) || typeof ctx.body !== 'string') {
       return;
     }
 

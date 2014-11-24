@@ -74,4 +74,10 @@ describe('index.test.js', function () {
     .expect('content-type', 'text/html; charset=utf-8')
     .expect(200, done);
   });
+
+  it('should ignore buffer response', function (done) {
+    request(app.listen())
+    .get('/buffer')
+    .expect(200, done);
+  });
 });
