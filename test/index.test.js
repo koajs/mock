@@ -80,4 +80,24 @@ describe('index.test.js', function () {
     .get('/buffer')
     .expect(200, done);
   });
+
+  describe('options.documentDomain', function () {
+    var app = require('./document_domain');
+
+    it('should render iframe with domain=localhost', function (done) {
+      request(app.listen())
+      .get('/domain?__scene=default')
+      .expect(/localhost/)
+      .expect(/&domain=localhost/)
+      .expect(200, done);
+    });
+
+    it('should auto set iframe document domain', function (done) {
+      request(app.listen())
+      .get('/__koa_mock_scence_toolbox?domain=localhost')
+      .expect('content-type', 'text/html; charset=utf-8')
+      .expect(/document\.domain = qs\.domain/)
+      .expect(200, done);
+    });
+  });
 });

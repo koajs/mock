@@ -47,6 +47,9 @@ button {
 (function(parent) {
   // try to get all scenes from querystring: '/scene_toolbox.html?scenes=one,two,...'
   var qs = parseQueryString(location.search);
+  if (qs.domain) {
+    document.domain = qs.domain;
+  }
   var scenes = qs.scenes;
   if (scenes) {
     scenes = scenes.split(',');
