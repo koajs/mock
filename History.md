@@ -1,4 +1,9 @@
 
+1.0.6 / 2014-11-24
+==================
+
+ * support document.domain = $domain both on parent document and iframe document
+
 1.0.5 / 2014-11-24
 ==================
 
