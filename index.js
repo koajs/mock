@@ -56,7 +56,7 @@ module.exports = function (options) {
 
     // add scene toolbox iframe
     var scenes = urlmock.findAllScenes(datadir, ctx.url);
-    var iframe = '<iframe src="/__koa_mock_scence_toolbox?scenes=' + scenes.join(',') +
+    var iframe = '<iframe src="/__koa_mock_scence_toolbox?scenes=' + scenes.map(encodeURIComponent).join(',') +
       '&domain=' + encodeURIComponent(documentDomain) + '" \
       style="width: 130px; position: fixed; right: 0; border: 0; bottom: 0; margin: 0; padding: 0; height: 28px; z-index: 99998;">\
       </iframe></body>';

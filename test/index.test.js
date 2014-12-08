@@ -25,6 +25,13 @@ describe('index.test.js', function () {
     .expect(/fengmk2/, done);
   });
 
+  it('should show custom scene name using __name property', function (done) {
+    request(app.listen())
+    .get('/users/1') // mocks/users/1/*
+    .expect(/normal%20user%20\(default\.js\),fengmk2,%E9%A9%AC%20%F0%9F%90%B4%20yun%20yun%20\(jackma\.js\)/)
+    .expect(/iframe/, done);
+  });
+
   it('should render /users/1?__scene=fengmk2', function (done) {
     request(app.listen())
     .get('/users/1?__scene=fengmk2')
