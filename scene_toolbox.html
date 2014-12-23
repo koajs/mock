@@ -116,15 +116,15 @@ button {
     var params = str.split('&');
     for (var i = 0; i < params.length; i++) {
       var param = params[i];
-      var i = param.indexOf('=');
+      var index = param.indexOf('=');
       var key, val;
 
-      if (i === -1) {
+      if (index === -1) {
         key = param;
         val = null;
       } else {
-        key = param.substring(0, i);
-        val = param.substring(i + 1);
+        key = param.substring(0, index);
+        val = param.substring(index + 1);
       }
 
       if (!ret.hasOwnProperty(key)) {
