@@ -40,6 +40,11 @@ app.use(function* () {
     this.type = 'html';
     return this.body = new Buffer('buffer string');
   }
+  if (this.path === '/foo.json') {
+    return this.body = {
+      foo: 'bar'
+    };
+  }
 });
 
 nunjucks.configure(path.join(fixtures, 'views'));

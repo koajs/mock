@@ -15,6 +15,9 @@
  */
 
 var request = require('supertest');
+var path = require('path');
+var koa = require('koa');
+var mock = require('../');
 var app = require('./app');
 
 describe('index.test.js', function () {
@@ -77,7 +80,7 @@ describe('index.test.js', function () {
 
   it('should render toolbox iframe', function (done) {
     request(app.listen())
-    .get('/__koa_mock_scence_toolbox')
+    .get('/__koa_mock_scene_toolbox')
     .expect('content-type', 'text/html; charset=utf-8')
     .expect(200, done);
   });
@@ -86,6 +89,81 @@ describe('index.test.js', function () {
     request(app.listen())
     .get('/buffer')
     .expect(200, done);
+  });
+
+  describe('ajax', function () {
+    it('should return mock data on ajax', function (done) {
+      request(app.listen())
+      .get('/foo.json')
+      .set('Referer', '/foo?__scene=other')
+      .set('X-Requested-With', 'XMLHttpRequest')
+      .expect({
+        foo: 'other'
+      })
+      .expect(200, done);
+    });
+
+    it('should return mock data with custom ajax detector', function (done) {
+      var fixtures = path.join(__dirname, 'fixtures');
+      var app = koa();
+      app.use(mock({
+        datadir: path.join(fixtures, 'mocks'),
+        isAjax: function (ctx) {
+          if (ctx.url.indexOf('.json') > 0) {
+            return true;
+          }
+          return false;
+        }
+      }));
+
+      request(app.listen())
+      .get('/foo.json')
+      .set('Referer', '/foo?__scene=other')
+      .expect({
+        foo: 'other'
+      })
+      .expect(200, done);
+    });
+
+    it('should throw error on require mock data', function (done) {
+      request(app.listen())
+      .get('/foo.json?u=1')
+      .set('Referer', '/foo?__scene=error')
+      .set('X-Requested-With', 'XMLHttpRequest')
+      .expect(/Internal Server Error/)
+      .expect(500, done);
+    });
+
+    it('should not return mock data on ajax', function (done) {
+      request(app.listen())
+      .get('/foo.json?u=1')
+      .set('Referer', '/foo?__scene=default')
+      .set('X-Requested-With', 'XMLHttpRequest')
+      .expect({
+        foo: 'bar'
+      })
+      .expect(200, done);
+    });
+
+    it('should not return mock data when missing referer', function (done) {
+      request(app.listen())
+      .get('/foo.json')
+      .set('X-Requested-With', 'XMLHttpRequest')
+      .expect({
+        foo: 'bar'
+      })
+      .expect(200, done);
+    });
+
+    it('should not return mock data when request is not ajax', function (done) {
+      request(app.listen())
+      .get('/foo.json')
+      .set('Referer', '/foo?__scene=other')
+      .expect({
+        foo: 'bar'
+      })
+      .expect(200, done);
+    });
   });
 
   describe('options.documentDomain', function () {
@@ -101,7 +179,7 @@ describe('index.test.js', function () {
 
     it('should auto set iframe document domain', function (done) {
       request(app.listen())
-      .get('/__koa_mock_scence_toolbox?domain=localhost')
+      .get('/__koa_mock_scene_toolbox?domain=localhost')
       .expect('content-type', 'text/html; charset=utf-8')
       .expect(/document\.domain = qs\.domain/)
       .expect(200, done);
