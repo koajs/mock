@@ -44,101 +44,92 @@ button {
 
 <script src="https://dn-staticfile.qbox.me/jquery/1.9.0/jquery.min.js"></script>
 <script>
-(function(parent) {
-  // try to get all scenes from querystring: '/scene_toolbox.html?scenes=one,two,...'
-  var qs = parseQueryString(location.search);
-  if (qs.domain) {
-    document.domain = qs.domain;
-  }
-  var scenes = qs.scenes;
-  if (scenes) {
-    scenes = scenes.split(',');
+// try to get all scenes from querystring: '/scene_toolbox.html?scenes=one,two,...'
+var qs = parseQueryString(location.search);
+if (qs.domain) {
+  document.domain = qs.domain;
+}
+var parent = this.top;
+var scenes = parent.__koa_mock_scenes || [];
+
+var select = $('#j-switch-scene');
+var queries = parseQueryString(parent.location.search);
+var options = '<option value=""></option>';
+
+// create select options
+for (var i = 0; i < scenes.length; i++) {
+  var v = scenes[i];
+  options += '<option value="' + v + '">' + v + '</option>';
+}
+
+select.html(options)
+var currentScene = queries.__scene;
+if (currentScene) {
+  select.val(currentScene);
+}
+
+// change scene
+select.on('change', function() {
+  var val = select.val();
+  if (val) {
+    queries.__scene = val;
   } else {
-    scenes = [];
+    delete queries.__scene;
   }
-  // if (scenes.indexOf('default') === -1) {
-  //   scenes.unshift('default');
-  // }
+  var qs = stringifyQueryString(queries);
+  if (qs) {
+    parent.location.search = '?' + qs;
+  } else {
+    parent.location = parent.location.pathname;
+  }
+});
 
-  var select = $('#j-switch-scene');
-  var queries = parseQueryString(parent.location.search);
-  var options = '<option value=""></option>';
+function stringifyQueryString(qs) {
+  var s = [];
+  for (var k in qs) {
+    s.push(k + '=' + encodeURIComponent(qs[k]));
+  }
+  s = s.join('&');
+  return s;
+}
 
-  // create select options
-  for (var i = 0; i < scenes.length; i++) {
-    var v = scenes[i];
-    options += '<option value="' + v + '">' + v + '</option>';
+function parseQueryString(search) {
+  search = search || '';
+  var str = search.replace(/^(\?|#)/, '');
+
+  if (!str) {
+    return {};
   }
 
-  select.html(options)
-  var currentScene = queries.__scene;
-  if (currentScene) {
-    select.val(currentScene);
-  }
+  var ret = {};
 
-  // change scene
-  select.on('change', function() {
-    var val = select.val();
-    if (val) {
-      queries.__scene = val;
+  str = decodeURIComponent(str).replace(/\+/g, ' ')
+
+  var params = str.split('&');
+  for (var i = 0; i < params.length; i++) {
+    var param = params[i];
+    var index = param.indexOf('=');
+    var key, val;
+
+    if (index === -1) {
+      key = param;
+      val = null;
     } else {
-      delete queries.__scene;
+      key = param.substring(0, index);
+      val = param.substring(index + 1);
     }
-    var qs = stringifyQueryString(queries);
-    if (qs) {
-      parent.location.search = '?' + qs;
+
+    if (!ret.hasOwnProperty(key)) {
+      ret[key] = val;
+    } else if (Array.isArray(ret[key])) {
+      ret[key].push(val);
     } else {
-      parent.location = parent.location.pathname;
+      ret[key] = [ret[key], val];
     }
-  });
-
-  function stringifyQueryString(qs) {
-    var s = [];
-    for (var k in qs) {
-      s.push(k + '=' + encodeURIComponent(qs[k]));
-    }
-    s = s.join('&');
-    return s;
   }
 
-  function parseQueryString(search) {
-    search = search || '';
-    var str = search.replace(/^(\?|#)/, '');
-
-    if (!str) {
-      return {};
-    }
-
-    var ret = {};
-
-    str = decodeURIComponent(str).replace(/\+/g, ' ')
-
-    var params = str.split('&');
-    for (var i = 0; i < params.length; i++) {
-      var param = params[i];
-      var index = param.indexOf('=');
-      var key, val;
-
-      if (index === -1) {
-        key = param;
-        val = null;
-      } else {
-        key = param.substring(0, index);
-        val = param.substring(index + 1);
-      }
-
-      if (!ret.hasOwnProperty(key)) {
-        ret[key] = val;
-      } else if (Array.isArray(ret[key])) {
-        ret[key].push(val);
-      } else {
-        ret[key] = [ret[key], val];
-      }
-    }
-
-    return ret;
-  }
-})(this.top)
+  return ret;
+}
 </script>
   </body>
 </html>
