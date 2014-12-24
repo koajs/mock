@@ -31,7 +31,7 @@ describe('index.test.js', function () {
   it('should show custom scene name using __name property', function (done) {
     request(app.listen())
     .get('/users/1') // mocks/users/1/*
-    .expect(/normal%20user%20\(default\.js\),fengmk2,%E9%A9%AC%20%F0%9F%90%B4%20yun%20yun%20\(jackma\.js\)/)
+    .expect(/window.__koa_mock_scenes=/)
     .expect(/iframe/, done);
   });
 
@@ -173,7 +173,7 @@ describe('index.test.js', function () {
       request(app.listen())
       .get('/domain?__scene=default')
       .expect(/localhost/)
-      .expect(/&domain=localhost/)
+      .expect(/__koa_mock_scene_toolbox\?domain=localhost/)
       .expect(200, done);
     });
 
