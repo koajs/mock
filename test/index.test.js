@@ -24,13 +24,15 @@ describe('index.test.js', function () {
   it('should render tpl with mock data', function (done) {
     request(app.listen())
     .get('/?__scene')
+    .expect('x-koa-mock', 'true')
     .expect(/iframe/)
     .expect(/fengmk2/, done);
   });
 
-  it('should show custom scene name using __name property', function (done) {
+  it('should also inject when __scene is not specified', function (done) {
     request(app.listen())
     .get('/users/1') // mocks/users/1/*
+    .expect('x-koa-mock', 'false')
     .expect(/window.__koa_mock_scenes=/)
     .expect(/iframe/, done);
   });
@@ -38,12 +40,14 @@ describe('index.test.js', function () {
   it('should render /users/1?__scene=fengmk2', function (done) {
     request(app.listen())
     .get('/users/1?__scene=fengmk2')
+    .expect('x-koa-mock', 'true')
     .expect(/<p>profile, fengmk2<\/p>/, done);
   });
 
   it('should return json when mock data without __view', function (done) {
     request(app.listen())
     .get('/user?__scene=mk2')
+    .expect('x-koa-mock', 'true')
     .expect({
       name: 'mk2'
     }, done);
@@ -52,12 +56,14 @@ describe('index.test.js', function () {
   it('should render html when ext not contains `.json`', function (done) {
     request(app.listen())
     .get('/posts/123?__scene')
+    .expect('x-koa-mock', 'true')
     .expect(/id: 123/, done);
   });
 
   it('should return json when ext contains `.json`', function (done) {
     request(app.listen())
     .get('/posts/123.json?__scene')
+    .expect('x-koa-mock', 'true')
     .expect({
       id: 123,
       __view: 'post.html'
@@ -67,6 +73,7 @@ describe('index.test.js', function () {
   it('should render page with scenes when querystring missing __scene', function (done) {
     request(app.listen())
     .get('/')
+    .expect('x-koa-mock', 'false')
     .expect(/<p>welcome home, <\/p>/)
     .expect(/iframe/)
     .expect(200, done);
@@ -81,6 +88,7 @@ describe('index.test.js', function () {
   it('should render toolbox iframe', function (done) {
     request(app.listen())
     .get('/__koa_mock_scene_toolbox')
+    .expect('x-koa-mock', 'true')
     .expect('content-type', 'text/html; charset=utf-8')
     .expect(200, done);
   });
@@ -88,6 +96,7 @@ describe('index.test.js', function () {
   it('should ignore buffer response', function (done) {
     request(app.listen())
     .get('/buffer')
+    .expect('x-koa-mock', 'false')
     .expect(200, done);
   });
 
@@ -97,6 +106,7 @@ describe('index.test.js', function () {
       .get('/foo.json')
       .set('Referer', '/foo?__scene=other')
       .set('X-Requested-With', 'XMLHttpRequest')
+      .expect('x-koa-mock', 'true')
       .expect({
         foo: 'other'
       })
@@ -119,6 +129,7 @@ describe('index.test.js', function () {
       request(app.listen())
       .get('/foo.json')
       .set('Referer', '/foo?__scene=other')
+      .expect('x-koa-mock', 'true')
       .expect({
         foo: 'other'
       })
@@ -139,6 +150,7 @@ describe('index.test.js', function () {
       .get('/foo.json?u=1')
       .set('Referer', '/foo?__scene=default')
       .set('X-Requested-With', 'XMLHttpRequest')
+      .expect('x-koa-mock', 'false')
       .expect({
         foo: 'bar'
       })
@@ -149,6 +161,7 @@ describe('index.test.js', function () {
       request(app.listen())
       .get('/foo.json')
       .set('X-Requested-With', 'XMLHttpRequest')
+      .expect('x-koa-mock', 'false')
       .expect({
         foo: 'bar'
       })
@@ -159,6 +172,7 @@ describe('index.test.js', function () {
       request(app.listen())
       .get('/foo.json')
       .set('Referer', '/foo?__scene=other')
+      .expect('x-koa-mock', 'false')
       .expect({
         foo: 'bar'
       })
@@ -172,6 +186,7 @@ describe('index.test.js', function () {
     it('should render iframe with domain=localhost', function (done) {
       request(app.listen())
       .get('/domain?__scene=default')
+      .expect('x-koa-mock', 'true')
       .expect(/localhost/)
       .expect(/__koa_mock_scene_toolbox\?domain=localhost/)
       .expect(200, done);
@@ -180,6 +195,7 @@ describe('index.test.js', function () {
     it('should auto set iframe document domain', function (done) {
       request(app.listen())
       .get('/__koa_mock_scene_toolbox?domain=localhost')
+      .expect('x-koa-mock', 'true')
       .expect('content-type', 'text/html; charset=utf-8')
       .expect(/document\.domain = qs\.domain/)
       .expect(200, done);

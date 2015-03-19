@@ -30,6 +30,7 @@ module.exports = function (options) {
   return function* mock(next) {
     if (this.path === '/__koa_mock_scene_toolbox') {
       this.type = 'html';
+      this.set('x-koa-mock', true);
       return this.body = fs.createReadStream(path.join(__dirname, 'scene_toolbox.html'));
     }
 
@@ -38,10 +39,13 @@ module.exports = function (options) {
       if (referer && referer.indexOf('__scene=') > 0 && isAjax(this)) {
         return yield* mockAjax(this, next);
       }
+      this.set('x-koa-mock', false);
       yield* next;
       inject(this);
       return;
     }
+
+    this.set('x-koa-mock', true);
 
     var data = urlmock(datadir, this);
     var view = data.__view;
@@ -89,9 +93,11 @@ module.exports = function (options) {
       }
     }
     if (hasData) {
+      ctx.set('x-koa-mock', true);
       return ctx.body = data;
     }
 
+    ctx.set('x-koa-mock', false);
     yield* next;
   }
 };
