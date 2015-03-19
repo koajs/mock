@@ -50,16 +50,15 @@ if (qs.domain) {
   document.domain = qs.domain;
 }
 var parent = this.top;
-var scenes = parent.__koa_mock_scenes || [];
+var scenes = parent.__koa_mock_scenes || {};
 
 var select = $('#j-switch-scene');
 var queries = parseQueryString(parent.location.search);
 var options = '<option value=""></option>';
 
 // create select options
-for (var i = 0; i < scenes.length; i++) {
-  var v = scenes[i];
-  options += '<option value="' + v + '">' + v + '</option>';
+for (var filename in scenes) {
+  options += '<option value="' + filename + '">' + scenes[filename] + ' (' + filename + ')</option>';
 }
 
 select.html(options)
