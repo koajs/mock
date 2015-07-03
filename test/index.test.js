@@ -8,7 +8,7 @@
  *   fengmk2 <fengmk2@gmail.com> (http://fengmk2.github.com)
  */
 
-"use strict";
+'use strict';
 
 /**
  * Module dependencies.
@@ -51,6 +51,13 @@ describe('index.test.js', function () {
     .expect({
       name: 'mk2'
     }, done);
+  });
+
+  it('should return json when mock data without __context', function (done) {
+    request(app.listen())
+    .get('/users/1?__scene=popomore')
+    .expect('x-koa-mock', 'true')
+    .expect(/sessionId: 1234/, done);
   });
 
   it('should render html when ext not contains `.json`', function (done) {
