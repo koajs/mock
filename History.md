@@ -1,4 +1,9 @@
 
+1.3.0 / 2015-07-07
+==================
+
+ * feat(context): Add __context that can mock app.context
+
 1.2.1 / 2015-03-20
 ==================
 
