@@ -50,6 +50,13 @@ app.use(function* () {
 nunjucks.configure(path.join(fixtures, 'views'));
 
 app.context.render = function* (view, data) {
+  var that = this;
+  data = data || '';
+  data.helper = {
+    getSessionId: function() {
+      return that.sessionId;
+    }
+  };
   this.body = nunjucks.render(view, data);
 };
 

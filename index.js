@@ -48,6 +48,11 @@ module.exports = function (options) {
     this.set('x-koa-mock', true);
 
     var data = urlmock(datadir, this);
+    var context = data.__context || {};
+    for (var key in context) {
+      this[key] = context[key];
+    }
+
     var view = data.__view;
     debug('mock %s => %j, view: %s', this.url, data, view);
     if (!view || IS_JSON_RE.test(this.path)) {
