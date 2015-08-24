@@ -51,7 +51,14 @@ nunjucks.configure(path.join(fixtures, 'views'));
 
 app.context.render = function* (view, data) {
   var that = this;
-  data = data || '';
+  data = data || {};
+  if(this.state){
+    Object.keys(this.state).forEach(function(key){
+      if(!data.hasOwnProperty(key)){
+        data[key] = this.state[key];
+      }
+    }, this);
+  }
   data.helper = {
     getSessionId: function() {
       return that.sessionId;

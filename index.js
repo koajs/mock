@@ -53,14 +53,17 @@ module.exports = function (options) {
       this[key] = context[key];
     }
 
-    var view = data.__view;
-    debug('mock %s => %j, view: %s', this.url, data, view);
-    if (!view || IS_JSON_RE.test(this.path)) {
-      return this.body = data;
+    if (!data.__skipRender) {
+      var view = data.__view;
+      debug('mock %s => %j, view: %s', this.url, data, view);
+      if (!view || IS_JSON_RE.test(this.path)) {
+        return this.body = data;
+      }
+      yield this.render(view, data);
+    } else {
+      console.log(this.state)
+      yield* next;
     }
-
-    yield this.render(view, data);
-
     inject(this);
   };
 
