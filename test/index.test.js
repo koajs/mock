@@ -29,6 +29,14 @@ describe('index.test.js', function () {
     .expect(/fengmk2/, done);
   });
 
+  it('should skip render when __skipRender=true', function (done) {
+    request(app.listen())
+    .get('/?__scene=skipRender')
+    .expect('x-koa-mock', 'true')
+    .expect(/iframe/)
+    .expect(/skip-render/, done);
+  });
+
   it('should also inject when __scene is not specified', function (done) {
     request(app.listen())
     .get('/users/1') // mocks/users/1/*
