@@ -4,36 +4,36 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <style>
-* {
-  margin: 0;
-  padding: 0;
-}
+      * {
+        margin: 0;
+        padding: 0;
+      }
 
-html {
-  background-color: rgba(0, 0, 0, 0.4);
-}
+      html {
+        background-color: rgba(0, 0, 0, 0.4);
+      }
 
-body {
-  padding: 4px;
-  text-align: center;
-}
+      body {
+        padding: 4px;
+        text-align: center;
+      }
 
-select, button {
-  display: inline-block;
-  cursor: pointer;
-}
+      select, button {
+        display: inline-block;
+        cursor: pointer;
+      }
 
-button {
-  padding: 0 6px 4px;
-}
+      button {
+        padding: 0 6px 4px;
+      }
 
-.switch-locale {
-  width: 77px;
-}
+      .switch-locale {
+        width: 77px;
+      }
 
-.switch-scene {
-  width: 90%;
-}
+      .switch-scene {
+        width: 90%;
+      }
     </style>
   </head>
 
@@ -42,93 +42,88 @@ button {
       <option></option>
     </select>
 
-<script src="https://dn-staticfile.qbox.me/jquery/1.9.0/jquery.min.js"></script>
-<script>
-// try to get all scenes from querystring: '/scene_toolbox.html?scenes=one,two,...'
-var qs = parseQueryString(location.search);
-if (qs.domain) {
-  document.domain = qs.domain;
-}
-var parent = this.top;
-var scenes = parent.__koa_mock_scenes || {};
+    <script>
+      // try to get all scenes from querystring: '/scene_toolbox.html?scenes=one,two,...'
+      var qs = parseQueryString(location.search);
+      if (qs.domain) {
+        document.domain = qs.domain;
+      }
+      var parent = this.top;
+      var scenes = parent.__koa_mock_scenes || {};
 
-var select = $('#j-switch-scene');
-var queries = parseQueryString(parent.location.search);
-var options = '<option value=""></option>';
+      var select = document.getElementById('j-switch-scene');
+      var queries = parseQueryString(parent.location.search);
+      var options = '<option value=""></option>';
 
-// create select options
-for (var filename in scenes) {
-  options += '<option value="' + filename + '">' + scenes[filename] + ' (' + filename + ')</option>';
-}
+      // create select options
+      var currentScene = queries.__scene;
+      for (var filename in scenes) {
+        options += '<option value="' + filename + '" ' + ((currentScene && filename === currentScene) ? 'selected' : '') + '>' + scenes[filename] + ' (' + filename + ')</option>';
+      }
+      select.innerHTML = options;
 
-select.html(options)
-var currentScene = queries.__scene;
-if (currentScene) {
-  select.val(currentScene);
-}
+      // change scene
+      select.addEventListener('change', function() {
+        var val = select.value;
+        if (val) {
+          queries.__scene = val;
+        } else {
+          delete queries.__scene;
+        }
+        var qs = stringifyQueryString(queries);
+        if (qs) {
+          parent.location.search = '?' + qs;
+        } else {
+          parent.location = parent.location.pathname;
+        }
+      });
 
-// change scene
-select.on('change', function() {
-  var val = select.val();
-  if (val) {
-    queries.__scene = val;
-  } else {
-    delete queries.__scene;
-  }
-  var qs = stringifyQueryString(queries);
-  if (qs) {
-    parent.location.search = '?' + qs;
-  } else {
-    parent.location = parent.location.pathname;
-  }
-});
+      function stringifyQueryString(qs) {
+        var s = [];
+        for (var k in qs) {
+          s.push(k + '=' + encodeURIComponent(qs[k]));
+        }
+        s = s.join('&');
+        return s;
+      }
 
-function stringifyQueryString(qs) {
-  var s = [];
-  for (var k in qs) {
-    s.push(k + '=' + encodeURIComponent(qs[k]));
-  }
-  s = s.join('&');
-  return s;
-}
+      function parseQueryString(search) {
+        search = search || '';
+        var str = search.replace(/^(\?|#)/, '');
 
-function parseQueryString(search) {
-  search = search || '';
-  var str = search.replace(/^(\?|#)/, '');
+        if (!str) {
+          return {};
+        }
 
-  if (!str) {
-    return {};
-  }
+        var ret = {};
 
-  var ret = {};
+        str = decodeURIComponent(str).replace(/\+/g, ' ')
 
-  str = decodeURIComponent(str).replace(/\+/g, ' ')
+        var params = str.split('&');
+        for (var i = 0; i < params.length; i++) {
+          var param = params[i];
+          var index = param.indexOf('=');
+          var key, val;
 
-  var params = str.split('&');
-  for (var i = 0; i < params.length; i++) {
-    var param = params[i];
-    var index = param.indexOf('=');
-    var key, val;
+          if (index === -1) {
+            key = param;
+            val = null;
+          } else {
+            key = param.substring(0, index);
+            val = param.substring(index + 1);
+          }
 
-    if (index === -1) {
-      key = param;
-      val = null;
-    } else {
-      key = param.substring(0, index);
-      val = param.substring(index + 1);
-    }
+          if (!ret.hasOwnProperty(key)) {
+            ret[key] = val;
+          } else if (Array.isArray(ret[key])) {
+            ret[key].push(val);
+          } else {
+            ret[key] = [ret[key], val];
+          }
+        }
 
-    if (!ret.hasOwnProperty(key)) {
-      ret[key] = val;
-    } else if (Array.isArray(ret[key])) {
-      ret[key].push(val);
-    } else {
-      ret[key] = [ret[key], val];
-    }
-  }
-
-  return ret;
-}
-</script>
+        return ret;
+      }
+    </script>
   </body>
 </html>
