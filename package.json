@@ -3,6 +3,10 @@
   "version": "1.4.1",
   "description": "web page mock middleware",
   "main": "index.js",
+  "files": [
+    "index.js",
+    "scene_toolbox.html"
+  ],
   "scripts": {
     "test": "mocha --harmony --check-leaks -R spec -t 5000 test/*.test.js",
     "test-cov": "node --harmony node_modules/.bin/istanbul cover node_modules/.bin/_mocha -- --check-leaks -t 5000 test/*.test.js",
@@ -20,9 +24,9 @@
     "contributors": "*",
     "istanbul-harmony": "*",
     "jshint": "*",
-    "koa": "~0.13.0",
+    "koa": "1",
     "mocha": "*",
-    "nunjucks": "~1.1.0",
+    "nunjucks-no-chokidar": "1",
     "supertest": "~0.15.0"
   },
   "homepage": "https://github.com/koajs/mock",

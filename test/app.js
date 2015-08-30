@@ -15,7 +15,7 @@
  */
 
 var koa = require('koa');
-var nunjucks = require('nunjucks');
+var nunjucks = require('nunjucks-no-chokidar');
 var path = require('path');
 var mock = require('../');
 
