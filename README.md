@@ -3,24 +3,18 @@ koa-mock
 
 [![NPM version][npm-image]][npm-url]
 [![build status][travis-image]][travis-url]
-[![Test coverage][coveralls-image]][coveralls-url]
-[![Gittip][gittip-image]][gittip-url]
+[![Test coverage][cov-image]][cov-url]
 [![David deps][david-image]][david-url]
-[![node version][node-image]][node-url]
 [![npm download][download-image]][download-url]
 
 [npm-image]: https://img.shields.io/npm/v/koa-mock.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/koa-mock
 [travis-image]: https://img.shields.io/travis/koajs/mock.svg?style=flat-square
 [travis-url]: https://travis-ci.org/koajs/mock
-[coveralls-image]: https://img.shields.io/coveralls/koajs/mock.svg?style=flat-square
-[coveralls-url]: https://coveralls.io/r/koajs/mock?branch=master
-[gittip-image]: https://img.shields.io/gittip/fengmk2.svg?style=flat-square
-[gittip-url]: https://www.gittip.com/fengmk2/
+[cov-image]: https://codecov.io/github/koajs/mock/coverage.svg?branch=master
+[cov-url]: https://codecov.io/github/koajs/mock?branch=master
 [david-image]: https://img.shields.io/david/koajs/mock.svg?style=flat-square
 [david-url]: https://david-dm.org/koajs/mock
-[node-image]: https://img.shields.io/badge/node.js-%3E=_0.11-green.svg?style=flat-square
-[node-url]: http://nodejs.org/download/
 [download-image]: https://img.shields.io/npm/dm/koa-mock.svg?style=flat-square
 [download-url]: https://npmjs.org/package/koa-mock
 
