@@ -1,4 +1,10 @@
 
+1.5.0 / 2015-10-27
+==================
+
+ * feat: mock __context when it's a getter
+ * use test-cov instead of test-travis
+
 1.4.1 / 2015-08-31
 ==================
 
