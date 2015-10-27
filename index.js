@@ -50,7 +50,15 @@ module.exports = function (options) {
     var data = urlmock(datadir, this);
     var context = data.__context || {};
     for (var key in context) {
-      this[key] = context[key];
+      if (this.hasOwnProperty(key)) {
+        delete this[key];
+      }
+      Object.defineProperty(this, key, {
+        writable: true,
+        configurable: true,
+        enumerable: true,
+        value: context[key]
+      });
     }
 
     if (data.__skipRender) {
