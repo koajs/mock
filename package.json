@@ -27,7 +27,7 @@
     "koa": "1",
     "mocha": "*",
     "nunjucks-no-chokidar": "1",
-    "supertest": "~0.15.0"
+    "supertest": "~1.1.0"
   },
   "homepage": "https://github.com/koajs/mock",
   "repository": {
