@@ -58,12 +58,24 @@
       // create select options
       var currentScene = queries.__scene;
       for (var filename in scenes) {
-        options += '<option value="' + filename + '" ' + ((currentScene && filename === currentScene) ? 'selected' : '') + '>' + scenes[filename] + ' (' + filename + ')</option>';
+        var opt = document.createElement('OPTION');
+        opt.text = scenes[filename] + '(' + filename + ')';
+        opt.value = filename;
+        if(currentScene && filename === currentScene) {
+          opt.selected = true;
+        }
+        select.options.add(opt);
       }
-      select.innerHTML = options;
 
-      // change scene
-      select.addEventListener('change', function() {
+      // register event listener , fix ie8
+      if (select.addEventListener) {
+        select.addEventListener('change', handleSelect);
+      } else if(select.attachEvent) {
+        select.attachEvent('onchange', handleSelect);
+      }
+
+      // update scene
+      function handleSelect() {
         var val = select.value;
         if (val) {
           queries.__scene = val;
@@ -76,7 +88,7 @@
         } else {
           parent.location = parent.location.pathname;
         }
-      });
+      }
 
       function stringifyQueryString(qs) {
         var s = [];
