@@ -31,7 +31,14 @@ module.exports = function (options) {
     if (this.path === '/__koa_mock_scene_toolbox') {
       this.type = 'html';
       this.set('x-koa-mock', true);
-      return this.body = fs.createReadStream(path.join(__dirname, 'scene_toolbox.html'));
+      var targetUri = urlparse(this.href, true).query.target_uri;
+      if (targetUri) {
+        var scenes = urlmock.findAllScenes(datadir, targetUri);
+        var body = fs.readFileSync(path.join(__dirname, 'scene_toolbox.html'));
+        return this.body = body.replace(/<\/select>/, '<script>window.__koa_mock_scenes=' + JSON.stringify(scenes) + '</script>');
+      } else {
+        return this.body = fs.createReadStream(path.join(__dirname, 'scene_toolbox.html'));
+      }
     }
 
     if (!this.query.hasOwnProperty('__scene')) {
@@ -80,12 +87,11 @@ module.exports = function (options) {
     }
 
     // add scene toolbox iframe
-    var scenes = urlmock.findAllScenes(datadir, ctx.url);
-    var iframe = '<script>window.__koa_mock_scenes=' + JSON.stringify(scenes) +
-      ';</script><iframe src="/__koa_mock_scene_toolbox?domain=' + encodeURIComponent(documentDomain) + '" \
-      style="position: fixed; right: 0; border: 0; bottom: 10px; margin: 0; padding: 0; height: 30px; z-index: 99998;">\
+    var iframe = '<iframe src="/__koa_mock_scene_toolbox?domain=' + encodeURIComponent(documentDomain) +
+      '&target_uri=' + ctx.url +
+      '" style="position: fixed; right: 0; border: 0; bottom: 10px; margin: 0; padding: 0; height: 30px; z-index: 99998;">\
       </iframe></body>';
-    debug('inject %s with scenes: %j', ctx.url, scenes);
+    debug('inject %s', ctx.url);
     ctx.body = ctx.body.replace(/<\/body>/, iframe);
   }
 
