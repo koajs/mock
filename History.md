@@ -1,4 +1,9 @@
 
+1.6.0 / 2016-04-12
+==================
+
+  * feat: scenes inject into __koa_mock_scene_toolbox html (#18)
+
 1.5.1 / 2016-01-14
 ==================
 
