@@ -41,7 +41,7 @@ describe('index.test.js', function () {
     request(app.listen())
     .get('/users/1') // mocks/users/1/*
     .expect('x-koa-mock', 'false')
-    .expect(/window.__koa_mock_scenes=/)
+    .expect(/target_uri=\/users\/1/)
     .expect(/iframe/, done);
   });
 

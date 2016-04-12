@@ -49,7 +49,7 @@
         document.domain = qs.domain;
       }
       var parent = this.top;
-      var scenes = parent.__koa_mock_scenes || {};
+      var scenes = window.__koa_mock_scenes || {};
 
       var select = document.getElementById('j-switch-scene');
       var queries = parseQueryString(parent.location.search);
