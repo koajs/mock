@@ -34,7 +34,8 @@ module.exports = function (options) {
       var targetUri = urlparse(this.href, true).query.target_uri;
       if (targetUri) {
         var scenes = urlmock.findAllScenes(datadir, targetUri);
-        var body = fs.readFileSync(path.join(__dirname, 'scene_toolbox.html'));
+        var body = fs.readFileSync(path.join(__dirname, 'scene_toolbox.html'), 'utf8');
+        debug('scenes %j when targetUri %s', scenes, targetUri);
         return this.body = body.replace(/<\/select>/, '<script>window.__koa_mock_scenes=' + JSON.stringify(scenes) + '</script>');
       } else {
         return this.body = fs.createReadStream(path.join(__dirname, 'scene_toolbox.html'));

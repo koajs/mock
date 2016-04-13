@@ -215,5 +215,13 @@ describe('index.test.js', function () {
       .expect(/document\.domain = qs\.domain/)
       .expect(200, done);
     });
+
+    it('should also inject when target_uri have value', function (done) {
+      request(app.listen())
+      .get('/__koa_mock_scene_toolbox?target_uri=/users/1')
+      .expect('x-koa-mock', 'true')
+      .expect(/<script>window\.__koa_mock_scenes/)
+      .expect(200, done);
+    });
   });
 });
