@@ -1,9 +1,9 @@
 sudo: false
 language: node_js
 node_js:
-  - '3'
-  - '2'
-  - '1'
+  - '7'
+  - '6'
+  - '4'
   - '0.12'
 script:
   - 'npm run test-cov'
