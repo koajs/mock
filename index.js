@@ -42,7 +42,7 @@ module.exports = function (options) {
       }
     }
 
-    if (!this.query.hasOwnProperty('__scene')) {
+    if (!Object.prototype.hasOwnProperty.call(this.query, '__scene')) {
       var referer = this.get('referer');
       if (referer && referer.indexOf('__scene=') > 0 && isAjax(this)) {
         return yield* mockAjax(this, next);
