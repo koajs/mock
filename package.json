@@ -16,8 +16,8 @@
     "contributors": "contributors -f plain -o AUTHORS"
   },
   "dependencies": {
-    "debug": "~2.2.0",
-    "urlmock": "~2.0.1"
+    "debug": "~2.6.7",
+    "urlmock": "~2.1.0"
   },
   "devDependencies": {
     "autod": "*",
