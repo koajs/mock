@@ -1,4 +1,4 @@
-/**!
+/**
  * koa-mock - index.js
  *
  * Copyright(c) fengmk2 and other contributors.
@@ -14,54 +14,54 @@
  * Module dependencies.
  */
 
-var debug = require('debug')('koa-mock');
-var urlmock = require('urlmock');
-var urlparse = require('url').parse;
-var path = require('path');
-var fs = require('fs');
+const debug = require('debug')('koa-mock');
+const urlmock = require('urlmock');
+const urlparse = require('url').parse;
+const path = require('path');
+const fs = require('fs');
 
-var IS_JSON_RE = /\.json$/;
+const IS_JSON_RE = /\.json$/;
 
-module.exports = function (options) {
-  var datadir = options.datadir;
-  var documentDomain = options.documentDomain || '';
-  var isAjax = options.isAjax || defaultDetectAjax;
+module.exports = options => {
+  const datadir = options.datadir;
+  const documentDomain = options.documentDomain || '';
+  const isAjax = options.isAjax || defaultDetectAjax;
 
-  return function* mock(next) {
-    if (this.path === '/__koa_mock_scene_toolbox') {
-      this.type = 'html';
-      this.set('x-koa-mock', true);
-      var targetUri = urlparse(this.href, true).query.target_uri;
+  return async function mock(ctx, next) {
+    if (ctx.path === '/__koa_mock_scene_toolbox') {
+      ctx.type = 'html';
+      ctx.set('x-koa-mock', true);
+      const targetUri = urlparse(ctx.href, true).query.target_uri;
       if (targetUri) {
-        var scenes = urlmock.findAllScenes(datadir, targetUri);
-        var body = fs.readFileSync(path.join(__dirname, 'scene_toolbox.html'), 'utf8');
+        const scenes = urlmock.findAllScenes(datadir, targetUri);
+        const body = fs.readFileSync(path.join(__dirname, 'scene_toolbox.html'), 'utf8');
         debug('scenes %j when targetUri %s', scenes, targetUri);
-        return this.body = body.replace(/<\/select>/, '<script>window.__koa_mock_scenes=' + JSON.stringify(scenes) + '</script>');
+        return ctx.body = body.replace(/<\/select>/, '<script>window.__koa_mock_scenes=' + JSON.stringify(scenes) + '</script>');
       } else {
-        return this.body = fs.createReadStream(path.join(__dirname, 'scene_toolbox.html'));
+        return ctx.body = fs.createReadStream(path.join(__dirname, 'scene_toolbox.html'));
       }
     }
 
-    if (!Object.prototype.hasOwnProperty.call(this.query, '__scene')) {
-      var referer = this.get('referer');
-      if (referer && referer.indexOf('__scene=') > 0 && isAjax(this)) {
-        return yield* mockAjax(this, next);
+    if (!Object.prototype.hasOwnProperty.call(ctx.query, '__scene')) {
+      const referer = ctx.get('referer');
+      if (referer && referer.indexOf('__scene=') > 0 && isAjax(ctx)) {
+        return mockAjax(ctx, next);
       }
-      this.set('x-koa-mock', false);
-      yield* next;
-      inject(this);
+      ctx.set('x-koa-mock', false);
+      await next();
+      inject(ctx);
       return;
     }
 
-    this.set('x-koa-mock', true);
+    ctx.set('x-koa-mock', true);
 
-    var data = urlmock(datadir, this);
-    var context = data.__context || {};
-    for (var key in context) {
-      if (this.hasOwnProperty(key)) {
-        delete this[key];
+    const data = urlmock(datadir, ctx);
+    const context = data.__context || {};
+    for (const key in context) {
+      if (ctx.hasOwnProperty(key)) {
+        delete ctx[key];
       }
-      Object.defineProperty(this, key, {
+      Object.defineProperty(ctx, key, {
         writable: true,
         configurable: true,
         enumerable: true,
@@ -70,16 +70,16 @@ module.exports = function (options) {
     }
 
     if (data.__skipRender) {
-      yield* next;
+      await next();
     } else {
-      var view = data.__view;
-      debug('mock %s => %j, view: %s', this.url, data, view);
-      if (!view || IS_JSON_RE.test(this.path)) {
-        return this.body = data;
+      const view = data.__view;
+      debug('mock %s => %j, view: %s', ctx.url, data, view);
+      if (!view || IS_JSON_RE.test(ctx.path)) {
+        return ctx.body = data;
       }
-      yield this.render(view, data);
+      await ctx.render(ctx, view, data);
     }
-    inject(this);
+    inject(ctx);
   };
 
   function inject(ctx) {
@@ -88,23 +88,22 @@ module.exports = function (options) {
     }
 
     // add scene toolbox iframe
-    var iframe = '<iframe src="/__koa_mock_scene_toolbox?domain=' + encodeURIComponent(documentDomain) +
-      '&target_uri=' + ctx.url +
-      '" style="position: fixed; right: 0; border: 0; bottom: 10px; margin: 0; padding: 0; height: 30px; z-index: 99998;">\
-      </iframe></body>';
+    const iframe = `<iframe src="/__koa_mock_scene_toolbox?domain=${encodeURIComponent(documentDomain)}&target_uri=${ctx.url}
+      " style="position: fixed; right: 0; border: 0; bottom: 10px; margin: 0; padding: 0; height: 30px; z-index: 99998;"></iframe></body>`;
+
     debug('inject %s', ctx.url);
     ctx.body = ctx.body.replace(/<\/body>/, iframe);
   }
 
-  function* mockAjax(ctx, next) {
-    var info = urlparse(ctx.get('referer'), true);
+  async function mockAjax(ctx, next) {
+    const info = urlparse(ctx.get('referer'), true);
     if (ctx.url.indexOf('?') > 0) {
       ctx.url += '&__scene=' + encodeURIComponent(info.query.__scene);
     } else {
       ctx.url += '?__scene=' + encodeURIComponent(info.query.__scene);
     }
-    var hasData = false;
-    var data;
+    let hasData = false;
+    let data;
     try {
       data = urlmock(datadir, ctx);
       hasData = true;
@@ -120,7 +119,7 @@ module.exports = function (options) {
     }
 
     ctx.set('x-koa-mock', false);
-    yield* next;
+    await next();
   }
 };
 

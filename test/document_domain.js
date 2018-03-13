@@ -1,4 +1,4 @@
-/**!
+/**
  * koa-mock - test/document_domain.js
  *
  * Copyright(c) fengmk2 and other contributors.
@@ -14,22 +14,22 @@
  * Module dependencies.
  */
 
-var koa = require('koa');
-var nunjucks = require('nunjucks-no-chokidar');
-var path = require('path');
-var mock = require('../');
+const Koa = require('koa');
+const nunjucks = require('nunjucks-no-chokidar');
+const path = require('path');
+const mock = require('../');
 
-var fixtures = path.join(__dirname, 'fixtures');
+const fixtures = path.join(__dirname, 'fixtures');
 
-var app = koa();
+const app = new Koa();
 app.use(mock({
   datadir: path.join(fixtures, 'mocks'),
-  documentDomain: 'localhost',
+  documentDomain: 'localhost'
 }));
 
-app.use(function* () {
+app.use(async () => {
   if (this.path === '/domain') {
-    return yield this.render('domain.html', {
+    return this.render('domain.html', {
       domain: 'localhost'
     });
   }
@@ -37,8 +37,8 @@ app.use(function* () {
 
 nunjucks.configure(path.join(fixtures, 'views'));
 
-app.context.render = function* (view, data) {
-  this.body = nunjucks.render(view, data);
+app.context.render = async function(ctx, view, data) {
+  ctx.body = nunjucks.render(view, data);
 };
 
 if (!module.parent) {
