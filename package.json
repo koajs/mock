@@ -7,24 +7,32 @@
     "test": "mocha --harmony --check-leaks -R spec -t 5000 test/*.test.js",
     "test-cov": "node --harmony node_modules/.bin/istanbul cover node_modules/.bin/_mocha -- --check-leaks -t 5000 test/*.test.js",
     "test-travis": "node --harmony node_modules/.bin/istanbul cover node_modules/.bin/_mocha --report lcovonly -- --check-leaks -t 5000 test/*.test.js",
-    "jshint": "jshint .",
+    "lint": "eslint .",
     "autod": "autod -w --prefix '~'",
     "cnpm": "npm install --registry=https://registry.npm.taobao.org",
     "contributors": "contributors -f plain -o AUTHORS"
   },
   "dependencies": {
-    "debug": "~2.1.0",
-    "urlmock": "~1.0.0"
+    "debug": "~3.1.0",
+    "urlmock": "~2.1.0",
+    "utility": "^1.13.1"
   },
   "devDependencies": {
     "autod": "*",
     "contributors": "*",
+    "eslint": "^4.18.2",
+    "eslint-config-koa": "^2.0.2",
+    "eslint-config-standard": "^11.0.0",
+    "eslint-plugin-import": "^2.9.0",
+    "eslint-plugin-node": "^6.0.1",
+    "eslint-plugin-promise": "^3.7.0",
+    "eslint-plugin-standard": "^3.0.1",
     "istanbul-harmony": "*",
     "jshint": "*",
-    "koa": "~0.13.0",
+    "koa": "~2.5.0",
     "mocha": "*",
-    "nunjucks": "~1.1.0",
-    "supertest": "~0.15.0"
+    "nunjucks": "~3.1.2",
+    "supertest": "~3.0.0"
   },
   "homepage": "https://github.com/koajs/mock",
   "repository": {
@@ -40,7 +48,7 @@
     "koa-mock"
   ],
   "engines": {
-    "node": ">= 0.11.12"
+    "node": ">= 8.0.0"
   },
   "author": "fengmk2 <fengmk2@gmail.com> (http://fengmk2.github.com)",
   "license": "MIT"

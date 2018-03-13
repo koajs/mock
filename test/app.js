@@ -1,4 +1,4 @@
-/**!
+/**
  * koa-mock - test/app.js
  *
  * Copyright(c) fengmk2 and other contributors.
@@ -14,22 +14,22 @@
  * Module dependencies.
  */
 
-var koa = require('koa');
+var Koa = require('koa');
 var nunjucks = require('nunjucks');
 var path = require('path');
 var mock = require('../');
 
 var fixtures = path.join(__dirname, 'fixtures');
 
-var app = koa();
+var app = new Koa();
 app.use(mock({
   datadir: path.join(fixtures, 'mocks')
 }));
 
 nunjucks.configure(path.join(fixtures, 'views'));
 
-app.context.render = function* (view, data) {
-  this.body = nunjucks.render(view, data);
+app.context.render = async function(ctx, view, data) {
+  ctx.body = nunjucks.render(view, data);
 };
 
 module.exports = app;

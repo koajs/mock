@@ -1,4 +1,4 @@
-/**!
+/**
  * koa-mock - index.js
  *
  * Copyright(c) fengmk2 and other contributors.
@@ -14,26 +14,27 @@
  * Module dependencies.
  */
 
-var debug = require('debug')('koa-mock');
-var urlmock = require('urlmock');
+const debug = require('debug')('koa-mock');
+const urlmock = require('urlmock');
+const utility = require('utility');
 
-var IS_JSON_RE = /\.json$/;
+const IS_JSON_RE = /\.json$/;
 
-module.exports = function (options) {
-  var datadir = options.datadir;
+module.exports = options => {
+  const datadir = options.datadir;
 
-  return function* mock(next) {
-    if (!this.query.hasOwnProperty('__scene')) {
-      return yield* next;
+  return async function mock(ctx, next) {
+    if (!utility.has(ctx.query, '__scene')) {
+      return next();
     }
 
-    var data = urlmock(datadir, this.url);
-    var view = data.__view;
-    debug('mock %s => %j, view: %s', this.url, data, view);
-    if (!view || IS_JSON_RE.test(this.path)) {
-      return this.body = data;
+    const data = urlmock(datadir, ctx);
+    const view = data.__view;
+    debug('mock %s => %j, view: %s', ctx.url, data, view);
+    if (!view || IS_JSON_RE.test(ctx.path)) {
+      return ctx.body = data;
     }
 
-    yield* this.render(view, data);
+    return ctx.render(ctx, view, data);
   };
 };
