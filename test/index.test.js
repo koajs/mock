@@ -21,8 +21,17 @@ const mock = require('../');
 const app = require('./app');
 
 describe('index.test.js', () => {
+  let server;
+
+  before(() => {
+    server = app.listen();
+  });
+  after(() => {
+    return server.close();
+  });
+
   it('should render tpl with mock data', done => {
-    request(app.listen())
+    request(server)
       .get('/?__scene')
       .expect('x-koa-mock', 'true')
       .expect(/iframe/)
@@ -30,7 +39,7 @@ describe('index.test.js', () => {
   });
 
   it('should skip render when __skipRender=true', done => {
-    request(app.listen())
+    request(server)
       .get('/?__scene=skipRender')
       .expect('x-koa-mock', 'true')
       .expect(/iframe/)
@@ -38,7 +47,7 @@ describe('index.test.js', () => {
   });
 
   it('should also inject when __scene is not specified', done => {
-    request(app.listen())
+    request(server)
       .get('/users/1') // mocks/users/1/*
       .expect('x-koa-mock', 'false')
       .expect(/target_uri=\/users\/1/)
@@ -46,14 +55,14 @@ describe('index.test.js', () => {
   });
 
   it('should render /users/1?__scene=fengmk2', done => {
-    request(app.listen())
+    request(server)
       .get('/users/1?__scene=fengmk2')
       .expect('x-koa-mock', 'true')
       .expect(/<p>profile, fengmk2<\/p>/, done);
   });
 
   it('should return json when mock data without __view', done => {
-    request(app.listen())
+    request(server)
       .get('/user?__scene=mk2')
       .expect('x-koa-mock', 'true')
       .expect({
@@ -62,21 +71,21 @@ describe('index.test.js', () => {
   });
 
   it('should return json when mock data without __context', done => {
-    request(app.listen())
+    request(server)
       .get('/users/1?__scene=popomore')
       .expect('x-koa-mock', 'true')
       .expect(/sessionId: 1234/, done);
   });
 
   it('should render html when ext not contains `.json`', done => {
-    request(app.listen())
+    request(server)
       .get('/posts/123?__scene')
       .expect('x-koa-mock', 'true')
       .expect(/id: 123/, done);
   });
 
   it('should return json when ext contains `.json`', done => {
-    request(app.listen())
+    request(server)
       .get('/posts/123.json?__scene')
       .expect('x-koa-mock', 'true')
       .expect({
@@ -86,7 +95,7 @@ describe('index.test.js', () => {
   });
 
   it('should render page with scenes when querystring missing __scene', done => {
-    request(app.listen())
+    request(server)
       .get('/')
       .expect('x-koa-mock', 'false')
       .expect(/<p>welcome home, <\/p>/)
@@ -95,13 +104,13 @@ describe('index.test.js', () => {
   });
 
   it('should 500 when mock file not exists', done => {
-    request(app.listen())
+    request(server)
       .get('/not-exists?__scene')
       .expect(500, done);
   });
 
   it('should render toolbox iframe', done => {
-    request(app.listen())
+    request(server)
       .get('/__koa_mock_scene_toolbox')
       .expect('x-koa-mock', 'true')
       .expect('content-type', 'text/html; charset=utf-8')
@@ -109,15 +118,24 @@ describe('index.test.js', () => {
   });
 
   it('should ignore buffer response', done => {
-    request(app.listen())
+    request(server)
       .get('/buffer')
       .expect('x-koa-mock', 'false')
       .expect(200, done);
   });
 
   describe('ajax', () => {
+    let server;
+
+    before(() => {
+      server = app.listen();
+    });
+    after(() => {
+      return server.close();
+    });
+
     it('should return mock data on ajax', done => {
-      request(app.listen())
+      request(server)
         .get('/foo.json')
         .set('Referer', '/foo?__scene=other')
         .set('X-Requested-With', 'XMLHttpRequest')
@@ -131,6 +149,7 @@ describe('index.test.js', () => {
     it('should return mock data with custom ajax detector', done => {
       const fixtures = path.join(__dirname, 'fixtures');
       const app = new Koa();
+
       app.use(mock({
         datadir: path.join(fixtures, 'mocks'),
         isAjax: ctx => {
@@ -141,18 +160,23 @@ describe('index.test.js', () => {
         }
       }));
 
-      request(app.listen())
+      const server = app.listen();
+
+      request(server)
         .get('/foo.json')
         .set('Referer', '/foo?__scene=other')
         .expect('x-koa-mock', 'true')
         .expect({
           foo: 'other'
         })
-        .expect(200, done);
+        .expect(200, () => {
+          server.close();
+          done();
+        });
     });
 
     it('should throw error on require mock data', done => {
-      request(app.listen())
+      request(server)
         .get('/foo.json?u=1')
         .set('Referer', '/foo?__scene=error')
         .set('X-Requested-With', 'XMLHttpRequest')
@@ -161,7 +185,7 @@ describe('index.test.js', () => {
     });
 
     it('should not return mock data on ajax', done => {
-      request(app.listen())
+      request(server)
         .get('/foo.json?u=1')
         .set('Referer', '/foo?__scene=default')
         .set('X-Requested-With', 'XMLHttpRequest')
@@ -173,7 +197,7 @@ describe('index.test.js', () => {
     });
 
     it('should not return mock data when missing referer', done => {
-      request(app.listen())
+      request(server)
         .get('/foo.json')
         .set('X-Requested-With', 'XMLHttpRequest')
         .expect('x-koa-mock', 'false')
@@ -184,7 +208,7 @@ describe('index.test.js', () => {
     });
 
     it('should not return mock data when request is not ajax', done => {
-      request(app.listen())
+      request(server)
         .get('/foo.json')
         .set('Referer', '/foo?__scene=other')
         .expect('x-koa-mock', 'false')
@@ -196,10 +220,18 @@ describe('index.test.js', () => {
   });
 
   describe('options.documentDomain', () => {
+    let server;
     const app = require('./document_domain');
+    before(() => {
+      server = app.listen();
+    });
+
+    after(() => {
+      return server.close();
+    });
 
     it('should render iframe with domain=localhost', done => {
-      request(app.listen())
+      request(server)
         .get('/domain?__scene=default')
         .expect('x-koa-mock', 'true')
         .expect(/localhost/)
@@ -208,7 +240,7 @@ describe('index.test.js', () => {
     });
 
     it('should auto set iframe document domain', done => {
-      request(app.listen())
+      request(server)
         .get('/__koa_mock_scene_toolbox?domain=localhost')
         .expect('x-koa-mock', 'true')
         .expect('content-type', 'text/html; charset=utf-8')
@@ -217,7 +249,7 @@ describe('index.test.js', () => {
     });
 
     it('should also inject when target_uri have value', done => {
-      request(app.listen())
+      request(server)
         .get('/__koa_mock_scene_toolbox?target_uri=/users/1')
         .expect('x-koa-mock', 'true')
         .expect(/<script>window\.__koa_mock_scenes/)
