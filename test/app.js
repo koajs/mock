@@ -1,4 +1,4 @@
-/**!
+/**
  * koa-mock - test/app.js
  *
  * Copyright(c) fengmk2 and other contributors.
@@ -14,34 +14,34 @@
  * Module dependencies.
  */
 
-var koa = require('koa');
-var nunjucks = require('nunjucks-no-chokidar');
-var path = require('path');
-var mock = require('../');
+const Koa = require('koa');
+const nunjucks = require('nunjucks-no-chokidar');
+const path = require('path');
+const mock = require('../');
 
-var fixtures = path.join(__dirname, 'fixtures');
+const fixtures = path.join(__dirname, 'fixtures');
 
-var app = koa();
+const app = new Koa();
 app.use(mock({
   datadir: path.join(fixtures, 'mocks')
 }));
 
-app.use(function* () {
-  if (this.path === '/') {
-    return yield this.render('home.html', {});
+app.use(async ctx => {
+  if (ctx.path === '/') {
+    return ctx.render(ctx, 'home.html', {});
   }
-  if (/^\/users\/\d+/.test(this.path)) {
-    return yield this.render('profile.html', {});
+  if (/^\/users\/\d+/.test(ctx.path)) {
+    return ctx.render(ctx, 'profile.html', {});
   }
-  if (this.path === '/user') {
-    return this.body = {};
+  if (ctx.path === '/user') {
+    return ctx.body = {};
   }
-  if (this.path === '/buffer') {
-    this.type = 'html';
-    return this.body = new Buffer('buffer string');
+  if (ctx.path === '/buffer') {
+    ctx.type = 'html';
+    return ctx.body = Buffer.from('buffer string');
   }
-  if (this.path === '/foo.json') {
-    return this.body = {
+  if (ctx.path === '/foo.json') {
+    return ctx.body = {
       foo: 'bar'
     };
   }
@@ -49,22 +49,21 @@ app.use(function* () {
 
 nunjucks.configure(path.join(fixtures, 'views'));
 
-app.context.render = function* (view, data) {
-  var that = this;
+app.context.render = async function (ctx, view, data) {
   data = data || {};
-  if(this.state){
-    Object.keys(this.state).forEach(function(key){
-      if(!data.hasOwnProperty(key)){
-        data[key] = this.state[key];
+  if (ctx.state){
+    Object.keys(ctx.state).forEach(function(key){
+      if (!data.hasOwnProperty(key)){
+        data[key] = ctx.state[key];
       }
-    }, this);
+    }, ctx);
   }
   data.helper = {
     getSessionId: function() {
-      return that.sessionId;
+      return ctx.sessionId;
     }
   };
-  this.body = nunjucks.render(view, data);
+  ctx.body = nunjucks.render(view, data);
 };
 
 Object.defineProperty(app.context, 'sessionId', {

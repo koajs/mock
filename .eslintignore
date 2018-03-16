@@ -1,0 +1,5 @@
+node_modules/
+coverage/
+.tmp/
+.git/
+test/fixtures/mocks/foo.json/error.js
