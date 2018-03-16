@@ -1,4 +1,13 @@
 
+2.0.0 / 2018-03-16
+==================
+
+**fixes**
+  * [[`f5e5b3f`](http://github.com/koajs/mock/commit/f5e5b3f3bfe445a674abb7b89e13113b7842dd53)] - fix: package.json to reduce vulnerabilities (snyk-bot <<admin+snyk-bot@snyk.io>>)
+
+**others**
+  * [[`09eefd4`](http://github.com/koajs/mock/commit/09eefd4cf4724f394cabf1d8779c539c6bf4952c)] - refactor: use async (#24) (hui <<kangpangpang@gmail.com>>)
+
 1.6.2 / 2017-04-06
 ==================
 
