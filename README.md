@@ -50,26 +50,26 @@ $ npm install koa-mock
 
 Using [nunjucks] template engine for example:
 
-- **NOTICE** You must implement `ctx.render(view, data)` generator function first.
+- **NOTICE** You must implement `ctx.render(ctx, view, data)` generator function first.
 - Use `__scene[={scene}]` querystring to enable mock and select one mock scene.
 
 ### `app.js`
 
 ```js
-var path = require('path');
-var nunjucks = require('nunjucks');
-var koa = require('koa');
-var mock = require('koa-mock');
+const path = require('path');
+const nunjucks = require('nunjucks');
+const Koa = require('koa');
+const mock = require('koa-mock');
 
-var app = koa();
+const app = new Koa();
 app.use(mock({
   datadir: path.join(__dirname, 'mocks')
 }));
 
 nunjucks.configure(path.join(__dirname, 'views'));
 
-app.context.render = function* (view, data) {
-  this.body = nunjucks.render(view, data);
+app.context.render = async function(ctx, view, data) {
+  ctx.body = nunjucks.render(view, data);
 };
 
 app.listen(1984);
